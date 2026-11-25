@@ -1,0 +1,72 @@
+{"mup": false, "width": 128, "lr": 6.103515625e-05, "steps": 600, "val_loss": 2.9577056169509888, "params": 870656, "seconds": 5.834819078445435}
+{"mup": false, "width": 128, "lr": 0.0001220703125, "steps": 600, "val_loss": 2.559262776374817, "params": 870656, "seconds": 6.0868306159973145}
+{"mup": false, "width": 128, "lr": 0.000244140625, "steps": 600, "val_loss": 2.3477109909057616, "params": 870656, "seconds": 5.429151296615601}
+{"mup": false, "width": 128, "lr": 0.00048828125, "steps": 600, "val_loss": 2.229869771003723, "params": 870656, "seconds": 6.172118902206421}
+{"mup": false, "width": 128, "lr": 0.0009765625, "steps": 600, "val_loss": 2.0181467533111572, "params": 870656, "seconds": 5.373296022415161}
+{"mup": false, "width": 128, "lr": 0.001953125, "steps": 600, "val_loss": 1.8475586295127868, "params": 870656, "seconds": 6.043969392776489}
+{"mup": false, "width": 128, "lr": 0.00390625, "steps": 600, "val_loss": 1.7598575592041015, "params": 870656, "seconds": 5.450565338134766}
+{"mup": false, "width": 128, "lr": 0.0078125, "steps": 600, "val_loss": 2.187341594696045, "params": 870656, "seconds": 5.825003623962402}
+{"mup": false, "width": 128, "lr": 0.015625, "steps": 600, "val_loss": 2.4341569900512696, "params": 870656, "seconds": 5.823251962661743}
+{"mup": true, "width": 128, "lr": 6.103515625e-05, "steps": 600, "val_loss": 3.565225887298584, "params": 870656, "seconds": 5.70886492729187, "mup_attn": "d", "mup_readout": "zero"}
+{"mup": true, "width": 128, "lr": 0.0001220703125, "steps": 600, "val_loss": 2.9869040727615355, "params": 870656, "seconds": 6.001981735229492, "mup_attn": "d", "mup_readout": "zero"}
+{"mup": true, "width": 128, "lr": 0.000244140625, "steps": 600, "val_loss": 2.6632818937301637, "params": 870656, "seconds": 5.4750776290893555, "mup_attn": "d", "mup_readout": "zero"}
+{"mup": true, "width": 128, "lr": 0.00048828125, "steps": 600, "val_loss": 2.445528531074524, "params": 870656, "seconds": 6.116943836212158, "mup_attn": "d", "mup_readout": "zero"}
+{"mup": true, "width": 128, "lr": 0.0009765625, "steps": 600, "val_loss": 2.330529713630676, "params": 870656, "seconds": 5.484164476394653, "mup_attn": "d", "mup_readout": "zero"}
+{"mup": true, "width": 128, "lr": 0.001953125, "steps": 600, "val_loss": 2.4063716411590574, "params": 870656, "seconds": 6.189504384994507, "mup_attn": "d", "mup_readout": "zero"}
+{"mup": true, "width": 128, "lr": 0.00390625, "steps": 600, "val_loss": 2.367024064064026, "params": 870656, "seconds": 5.387878179550171, "mup_attn": "d", "mup_readout": "zero"}
+{"mup": true, "width": 128, "lr": 0.0078125, "steps": 600, "val_loss": 2.322648048400879, "params": 870656, "seconds": 6.137402772903442, "mup_attn": "d", "mup_readout": "zero"}
+{"mup": true, "width": 128, "lr": 0.015625, "steps": 600, "val_loss": 2.4329649686813353, "params": 870656, "seconds": 5.433987617492676, "mup_attn": "d", "mup_readout": "zero"}
+{"mup": false, "width": 256, "lr": 6.103515625e-05, "steps": 600, "val_loss": 2.4290956020355225, "params": 3314176, "seconds": 7.581016540527344}
+{"mup": false, "width": 256, "lr": 0.0001220703125, "steps": 600, "val_loss": 2.2751010179519655, "params": 3314176, "seconds": 7.870093584060669}
+{"mup": false, "width": 256, "lr": 0.000244140625, "steps": 600, "val_loss": 2.136825752258301, "params": 3314176, "seconds": 10.052999019622803}
+{"mup": false, "width": 256, "lr": 0.00048828125, "steps": 600, "val_loss": 1.9151057958602906, "params": 3314176, "seconds": 9.595324993133545}
+{"mup": false, "width": 256, "lr": 0.0009765625, "steps": 600, "val_loss": 1.683913767337799, "params": 3314176, "seconds": 7.526036739349365}
+{"mup": false, "width": 256, "lr": 0.001953125, "steps": 600, "val_loss": 1.548829698562622, "params": 3314176, "seconds": 8.792402029037476}
+{"mup": false, "width": 256, "lr": 0.00390625, "steps": 600, "val_loss": 1.685659408569336, "params": 3314176, "seconds": 15.994569063186646}
+{"mup": false, "width": 256, "lr": 0.0078125, "steps": 600, "val_loss": 2.2732382297515867, "params": 3314176, "seconds": 19.45284867286682}
+{"mup": false, "width": 256, "lr": 0.015625, "steps": 600, "val_loss": 2.592839074134827, "params": 3314176, "seconds": 19.03444766998291}
+{"mup": true, "width": 256, "lr": 6.103515625e-05, "steps": 600, "val_loss": 3.5625781297683714, "params": 3314176, "seconds": 18.950881004333496, "mup_attn": "d", "mup_readout": "zero"}
+{"mup": true, "width": 256, "lr": 0.0001220703125, "steps": 600, "val_loss": 2.981682229042053, "params": 3314176, "seconds": 19.157907724380493, "mup_attn": "d", "mup_readout": "zero"}
+{"mup": true, "width": 256, "lr": 0.000244140625, "steps": 600, "val_loss": 2.6104952573776243, "params": 3314176, "seconds": 14.33949875831604, "mup_attn": "d", "mup_readout": "zero"}
+{"mup": true, "width": 256, "lr": 0.00048828125, "steps": 600, "val_loss": 2.41765820980072, "params": 3314176, "seconds": 9.954060316085815, "mup_attn": "d", "mup_readout": "zero"}
+{"mup": true, "width": 256, "lr": 0.0009765625, "steps": 600, "val_loss": 2.350097990036011, "params": 3314176, "seconds": 9.461525917053223, "mup_attn": "d", "mup_readout": "zero"}
+{"mup": true, "width": 256, "lr": 0.001953125, "steps": 600, "val_loss": 2.44991717338562, "params": 3314176, "seconds": 18.935231924057007, "mup_attn": "d", "mup_readout": "zero"}
+{"mup": true, "width": 256, "lr": 0.00390625, "steps": 600, "val_loss": 2.2929237842559815, "params": 3314176, "seconds": 19.611584901809692, "mup_attn": "d", "mup_readout": "zero"}
+{"mup": true, "width": 256, "lr": 0.0078125, "steps": 600, "val_loss": 2.3372362852096558, "params": 3314176, "seconds": 18.983747243881226, "mup_attn": "d", "mup_readout": "zero"}
+{"mup": true, "width": 256, "lr": 0.015625, "steps": 600, "val_loss": 2.262889051437378, "params": 3314176, "seconds": 19.440346717834473, "mup_attn": "d", "mup_readout": "zero"}
+{"mup": false, "width": 512, "lr": 6.103515625e-05, "steps": 600, "val_loss": 2.2125738620758058, "params": 12919808, "seconds": 33.55320596694946}
+{"mup": false, "width": 512, "lr": 0.0001220703125, "steps": 600, "val_loss": 2.0468756318092347, "params": 12919808, "seconds": 18.963521003723145}
+{"mup": false, "width": 512, "lr": 0.000244140625, "steps": 600, "val_loss": 1.8393692255020142, "params": 12919808, "seconds": 18.93963098526001}
+{"mup": false, "width": 512, "lr": 0.00048828125, "steps": 600, "val_loss": 1.5812586545944214, "params": 12919808, "seconds": 19.275954008102417}
+{"mup": false, "width": 512, "lr": 0.0009765625, "steps": 600, "val_loss": 1.4820042967796325, "params": 12919808, "seconds": 20.24940061569214}
+{"mup": false, "width": 512, "lr": 0.001953125, "steps": 600, "val_loss": 1.6220954060554504, "params": 12919808, "seconds": 18.92583966255188}
+{"mup": false, "width": 512, "lr": 0.00390625, "steps": 600, "val_loss": 2.2606401205062867, "params": 12919808, "seconds": 18.79608464241028}
+{"mup": false, "width": 512, "lr": 0.0078125, "steps": 600, "val_loss": 2.476433515548706, "params": 12919808, "seconds": 18.692613124847412}
+{"mup": false, "width": 512, "lr": 0.015625, "steps": 600, "val_loss": 2.6567155599594114, "params": 12919808, "seconds": 18.481004238128662}
+{"mup": true, "width": 512, "lr": 6.103515625e-05, "steps": 600, "val_loss": 3.561470460891724, "params": 12919808, "seconds": 18.830332040786743, "mup_attn": "d", "mup_readout": "zero"}
+{"mup": true, "width": 512, "lr": 0.0001220703125, "steps": 600, "val_loss": 2.983270692825317, "params": 12919808, "seconds": 18.91006565093994, "mup_attn": "d", "mup_readout": "zero"}
+{"mup": true, "width": 512, "lr": 0.000244140625, "steps": 600, "val_loss": 2.6230860471725466, "params": 12919808, "seconds": 18.95077419281006, "mup_attn": "d", "mup_readout": "zero"}
+{"mup": true, "width": 512, "lr": 0.00048828125, "steps": 600, "val_loss": 2.4031254768371584, "params": 12919808, "seconds": 18.924720525741577, "mup_attn": "d", "mup_readout": "zero"}
+{"mup": true, "width": 512, "lr": 0.0009765625, "steps": 600, "val_loss": 2.3096526622772218, "params": 12919808, "seconds": 18.950836181640625, "mup_attn": "d", "mup_readout": "zero"}
+{"mup": true, "width": 512, "lr": 0.001953125, "steps": 600, "val_loss": 2.363808536529541, "params": 12919808, "seconds": 18.92907214164734, "mup_attn": "d", "mup_readout": "zero"}
+{"mup": true, "width": 512, "lr": 0.00390625, "steps": 600, "val_loss": 2.384416174888611, "params": 12919808, "seconds": 18.953392267227173, "mup_attn": "d", "mup_readout": "zero"}
+{"mup": true, "width": 512, "lr": 0.0078125, "steps": 600, "val_loss": 2.1833827018737795, "params": 12919808, "seconds": 18.98302149772644, "mup_attn": "d", "mup_readout": "zero"}
+{"mup": true, "width": 512, "lr": 0.015625, "steps": 600, "val_loss": 2.3382856369018556, "params": 12919808, "seconds": 19.378968238830566, "mup_attn": "d", "mup_readout": "zero"}
+{"mup": false, "width": 1024, "lr": 6.103515625e-05, "steps": 600, "val_loss": 2.0563002109527586, "params": 51005440, "seconds": 104.8673346042633}
+{"mup": false, "width": 1024, "lr": 0.0001220703125, "steps": 600, "val_loss": 1.850716519355774, "params": 51005440, "seconds": 99.41888999938965}
+{"mup": false, "width": 1024, "lr": 0.000244140625, "steps": 600, "val_loss": 1.5528160095214845, "params": 51005440, "seconds": 59.03291201591492}
+{"mup": false, "width": 1024, "lr": 0.00048828125, "steps": 600, "val_loss": 1.4589096069335938, "params": 51005440, "seconds": 59.11168193817139}
+{"mup": false, "width": 1024, "lr": 0.0009765625, "steps": 600, "val_loss": 1.545887291431427, "params": 51005440, "seconds": 58.40510606765747}
+{"mup": false, "width": 1024, "lr": 0.001953125, "steps": 600, "val_loss": 2.1819523334503175, "params": 51005440, "seconds": 57.77197217941284}
+{"mup": false, "width": 1024, "lr": 0.00390625, "steps": 600, "val_loss": 2.4218517780303954, "params": 51005440, "seconds": 57.08687400817871}
+{"mup": false, "width": 1024, "lr": 0.0078125, "steps": 600, "val_loss": 2.6111308097839356, "params": 51005440, "seconds": 56.14548873901367}
+{"mup": false, "width": 1024, "lr": 0.015625, "steps": 600, "val_loss": null, "params": 51005440, "seconds": 30.085854291915894}
+{"mup": true, "width": 1024, "lr": 6.103515625e-05, "steps": 600, "val_loss": 3.5613888025283815, "params": 51005440, "seconds": 95.03922438621521, "mup_attn": "d", "mup_readout": "zero"}
+{"mup": true, "width": 1024, "lr": 0.0001220703125, "steps": 600, "val_loss": 2.990713047981262, "params": 51005440, "seconds": 57.650749921798706, "mup_attn": "d", "mup_readout": "zero"}
+{"mup": true, "width": 1024, "lr": 0.000244140625, "steps": 600, "val_loss": 2.6333736181259155, "params": 51005440, "seconds": 58.215677976608276, "mup_attn": "d", "mup_readout": "zero"}
+{"mup": true, "width": 1024, "lr": 0.00048828125, "steps": 600, "val_loss": 2.4164926767349244, "params": 51005440, "seconds": 58.59298896789551, "mup_attn": "d", "mup_readout": "zero"}
+{"mup": true, "width": 1024, "lr": 0.0009765625, "steps": 600, "val_loss": 2.3150708436965943, "params": 51005440, "seconds": 58.648685455322266, "mup_attn": "d", "mup_readout": "zero"}
+{"mup": true, "width": 1024, "lr": 0.001953125, "steps": 600, "val_loss": 2.378949785232544, "params": 51005440, "seconds": 58.540278673172, "mup_attn": "d", "mup_readout": "zero"}
+{"mup": true, "width": 1024, "lr": 0.00390625, "steps": 600, "val_loss": 2.2200761795043946, "params": 51005440, "seconds": 58.416611433029175, "mup_attn": "d", "mup_readout": "zero"}
+{"mup": true, "width": 1024, "lr": 0.0078125, "steps": 600, "val_loss": 2.160913896560669, "params": 51005440, "seconds": 58.23365831375122, "mup_attn": "d", "mup_readout": "zero"}
+{"mup": true, "width": 1024, "lr": 0.015625, "steps": 600, "val_loss": 2.1320970177650453, "params": 51005440, "seconds": 58.03079295158386, "mup_attn": "d", "mup_readout": "zero"}
