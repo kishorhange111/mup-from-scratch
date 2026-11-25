@@ -7,9 +7,24 @@ Width is ``d_model = m · base_width``. Head dim stays at 64, so heads scale wit
 |---|---|---|---|
 | embeddings (input-like) | σ | η | — |
 | hidden matrices (q, k, v, out, MLP) | σ / √m | **η / m** | — |
-| readout | **0** | η | logits **× 1/m** |
-| attention scores | — | — | ``q·k / d_head`` (instead of ``/√d_head``) |
+| readout | σ (or 0) | η | logits **× 1/m** |
+| attention scores | — | — | ``q·k / √d_head`` (see below) |
 | LayerNorm gains | 1 | η | — |
+
+Attention: μP prescribes ``q·k / d_head`` because, when the head dim grows with width, q and
+k become correlated during training and their dot product grows like d_head. Here the head
+dim is fixed at 64 and the number of heads grows instead, so that argument doesn't apply
+and any constant works. ``mup_attn="sqrt"`` (the default) keeps GPT-2's ``1/√d_head``, which
+makes μP at the base width (m = 1) the same model as SP apart from the zero readout.
+``mup_attn="d"`` uses ``1/d_head``. With d_head fixed, that only makes the attention logits
+8× smaller at every width.
+
+Readout: Tensor Programs V allows the readout to start at zero, and many μP write-ups do
+that. Here ``mup_readout="normal"`` (the default) uses std σ instead. Under the 1/m
+multiplier the initial logits then have std ∝ 1/√m, so they still vanish as width grows,
+and at m = 1 μP is exactly SP. ``mup_readout="zero"`` is kept as an ablation. With zero
+logits, no gradient reaches the hidden layers until the readout has moved, and on this task
+that cost about 0.6 nats/byte after 600 steps (see README).
 
 The point: under SP, the per-step change of each hidden activation grows with width (Adam
 updates are O(1) per entry and sum over fan-in), so the best lr shrinks as the model
@@ -40,6 +55,8 @@ class Config:
     ctx: int = 128
     mup: bool = True
     sigma: float = 0.02
+    mup_attn: str = "sqrt"  # μP attention scale: "sqrt" (1/√d_head) or "d" (1/d_head)
+    mup_readout: str = "normal"  # μP readout init: "normal" (std σ) or "zero"
 
     @property
     def m(self) -> float:
@@ -51,7 +68,10 @@ class Block(nn.Module):
         super().__init__()
         d = c.width
         self.h, self.hd = d // c.head_dim, c.head_dim
-        self.scale = 1.0 / c.head_dim if c.mup else 1.0 / math.sqrt(c.head_dim)
+        if c.mup_attn not in ("sqrt", "d"):
+            raise ValueError(f"mup_attn must be 'sqrt' or 'd', not {c.mup_attn!r}")
+        inv_d = c.mup and c.mup_attn == "d"
+        self.scale = 1.0 / c.head_dim if inv_d else 1.0 / math.sqrt(c.head_dim)
         self.n1, self.n2 = nn.LayerNorm(d), nn.LayerNorm(d)
         self.qkv = nn.Linear(d, 3 * d, bias=False)
         self.proj = nn.Linear(d, d, bias=False)
@@ -92,7 +112,9 @@ class GPT(nn.Module):
                 # μP: std ∝ 1/√fan_in relative to the base model; fc→out has 4× fan-in
                 std = c.sigma / math.sqrt(c.m) if c.mup else c.sigma
                 nn.init.normal_(lin.weight, std=std)
-        if c.mup:
+        if c.mup_readout not in ("normal", "zero"):
+            raise ValueError(f"mup_readout must be 'normal' or 'zero', not {c.mup_readout!r}")
+        if c.mup and c.mup_readout == "zero":
             nn.init.zeros_(self.head.weight)
         else:
             nn.init.normal_(self.head.weight, std=c.sigma)
