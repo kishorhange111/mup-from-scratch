@@ -121,6 +121,7 @@ def run(width, mup, lr, data, steps, device, bs=32, ctx=128, seed=0, **kw) -> di
     return {
         "mup": mup,
         "mup_attn": m.c.mup_attn if mup else None,
+        "mup_readout": m.c.mup_readout if mup else None,
         "width": width,
         "lr": lr,
         "steps": steps,
@@ -131,10 +132,18 @@ def run(width, mup, lr, data, steps, device, bs=32, ctx=128, seed=0, **kw) -> di
 
 
 def _variant(r) -> tuple:
-    return (r["mup"], r.get("mup_attn", "sqrt") if r["mup"] else None)
+    if not r["mup"]:
+        return (False, None, None)
+    return (True, r.get("mup_attn", "sqrt"), r.get("mup_readout", "normal"))
 
 
-LABELS = {(False, None): "SP", (True, "sqrt"): "μP", (True, "d"): "μP with q·k/d_head"}
+LABELS = {
+    (False, None, None): "SP",
+    (True, "sqrt", "normal"): "μP",
+    (True, "sqrt", "zero"): "μP, zero readout",
+    (True, "d", "zero"): "μP, zero readout and q·k/d_head",
+    (True, "d", "normal"): "μP, q·k/d_head",
+}
 
 
 def report_sweep(recs) -> str:
@@ -216,6 +225,7 @@ def main(argv=None):
     ap.add_argument("--steps", type=int, default=600)
     ap.add_argument("--depth", type=int, default=4)
     ap.add_argument("--mup-attn", choices=["sqrt", "d"], default="sqrt")
+    ap.add_argument("--mup-readout", choices=["normal", "zero"], default="normal")
     ap.add_argument("--only", choices=["sp", "mup"], default=None, help="sweep one side only")
     a = ap.parse_args(argv)
     os.makedirs(a.out, exist_ok=True)
@@ -227,7 +237,13 @@ def main(argv=None):
         if not recs:
             for mup in (False, True):
                 recs += coord_check(
-                    widths, mup, data[0], a.device, depth=a.depth, mup_attn=a.mup_attn
+                    widths,
+                    mup,
+                    data[0],
+                    a.device,
+                    depth=a.depth,
+                    mup_attn=a.mup_attn,
+                    mup_readout=a.mup_readout,
                 )
             with open(path, "w") as f:
                 f.writelines(json.dumps(r) + "\n" for r in recs)
@@ -244,9 +260,20 @@ def main(argv=None):
             for mup in sides:
                 for l2 in a.log2_lrs:
                     lr = 2.0**l2
-                    if (mup, a.mup_attn if mup else None, w, lr) in done:
+                    variant = (True, a.mup_attn, a.mup_readout) if mup else (False, None, None)
+                    if (*variant, w, lr) in done:
                         continue
-                    r = run(w, mup, lr, data, a.steps, a.device, depth=a.depth, mup_attn=a.mup_attn)
+                    r = run(
+                        w,
+                        mup,
+                        lr,
+                        data,
+                        a.steps,
+                        a.device,
+                        depth=a.depth,
+                        mup_attn=a.mup_attn,
+                        mup_readout=a.mup_readout,
+                    )
                     with open(path, "a") as f:
                         f.write(json.dumps(r) + "\n")
                     recs.append(r)

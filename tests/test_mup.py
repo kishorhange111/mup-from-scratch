@@ -31,18 +31,26 @@ def test_mup_initialisation():
     w_sp, w_mu = sp.blocks[0].fc.weight, mu.blocks[0].fc.weight
     assert w_sp.std().item() == pytest.approx(0.02, rel=0.05)
     assert w_mu.std().item() == pytest.approx(0.02 / 4, rel=0.05)
-    assert mu.head.weight.abs().max() == 0  # zero readout: logits start at exactly 0
+    assert mu.head.weight.std().item() == pytest.approx(0.02, rel=0.05)  # readout unscaled
     assert mu.emb.weight.std().item() == pytest.approx(0.02, rel=0.05)  # embeddings unscaled
-    x = torch.randint(0, 256, (2, 8))
-    assert mu(x).abs().max() == 0
+    torch.manual_seed(0)
+    zero = GPT(Config(width=512, mup=True, ctx=32, mup_readout="zero", **KW))
+    assert zero.head.weight.abs().max() == 0
+    assert zero(torch.randint(0, 256, (2, 8))).abs().max() == 0  # logits start at exactly 0
+
+
+def test_mup_initial_logits_shrink_with_width():
+    """With the 1/m multiplier, a std-σ readout gives initial logits with std ∝ 1/√m."""
+    x = torch.randint(0, 256, (4, 16))
+    std = {w: _model(w, True)(x).std().item() for w in (32, 512)}  # m = 1, 16
+    assert std[512] / std[32] == pytest.approx(0.25, rel=0.25)
 
 
 def test_mup_at_base_width_is_sp_up_to_the_readout():
     """At m = 1 every μP multiplier is 1, so with the same readout the two models agree."""
     sp, mu = _model(32, False), _model(32, True)  # base_width = 32
-    mu.head.weight.data.copy_(sp.head.weight)
     x = torch.randint(0, 256, (2, 8))
-    torch.testing.assert_close(mu(x), sp(x))
+    torch.testing.assert_close(mu(x), sp(x))  # same seed, same init, same forward
     assert [g["lr"] for g in param_groups(mu, 1e-3)] == [g["lr"] for g in param_groups(sp, 1e-3)]
     # the 1/d_head variant is a different model even at m = 1
     torch.manual_seed(0)
@@ -80,8 +88,8 @@ def test_run_and_report(tmp_path):
     assert math.isfinite(r["val_loss"]) and r["params"] > 0
     text = report_sweep([r, {**r, "lr": 2.0**-7, "val_loss": None}])
     assert "μP" in text and "✗" in text and "**" in text
-    assert r["mup_attn"] == "sqrt"
-    assert "q·k/d_head" in report_sweep([{**r, "mup_attn": "d"}])
+    assert (r["mup_attn"], r["mup_readout"]) == ("sqrt", "normal")
+    assert "q·k/d_head" in report_sweep([{**r, "mup_attn": "d", "mup_readout": "zero"}])
 
 
 def test_sweep_cli_resumes(tmp_path):

@@ -7,7 +7,7 @@ Width is ``d_model = m · base_width``. Head dim stays at 64, so heads scale wit
 |---|---|---|---|
 | embeddings (input-like) | σ | η | — |
 | hidden matrices (q, k, v, out, MLP) | σ / √m | **η / m** | — |
-| readout | **0** | η | logits **× 1/m** |
+| readout | σ (or 0) | η | logits **× 1/m** |
 | attention scores | — | — | ``q·k / √d_head`` (see below) |
 | LayerNorm gains | 1 | η | — |
 
@@ -16,8 +16,15 @@ k become correlated during training and their dot product grows like d_head. Her
 dim is fixed at 64 and the number of heads grows instead, so that argument doesn't apply
 and any constant works. ``mup_attn="sqrt"`` (the default) keeps GPT-2's ``1/√d_head``, which
 makes μP at the base width (m = 1) the same model as SP apart from the zero readout.
-``mup_attn="d"`` uses ``1/d_head``. With d_head fixed that is just 8× smaller attention
-logits at every width, and in the T4 sweep it cost μP about 0.6 nats/byte (see README).
+``mup_attn="d"`` uses ``1/d_head``. With d_head fixed, that only makes the attention logits
+8× smaller at every width.
+
+Readout: Tensor Programs V allows the readout to start at zero, and many μP write-ups do
+that. Here ``mup_readout="normal"`` (the default) uses std σ instead. Under the 1/m
+multiplier the initial logits then have std ∝ 1/√m, so they still vanish as width grows,
+and at m = 1 μP is exactly SP. ``mup_readout="zero"`` is kept as an ablation. With zero
+logits, no gradient reaches the hidden layers until the readout has moved, and on this task
+that cost about 0.6 nats/byte after 600 steps (see README).
 
 The point: under SP, the per-step change of each hidden activation grows with width (Adam
 updates are O(1) per entry and sum over fan-in), so the best lr shrinks as the model
@@ -49,6 +56,7 @@ class Config:
     mup: bool = True
     sigma: float = 0.02
     mup_attn: str = "sqrt"  # μP attention scale: "sqrt" (1/√d_head) or "d" (1/d_head)
+    mup_readout: str = "normal"  # μP readout init: "normal" (std σ) or "zero"
 
     @property
     def m(self) -> float:
@@ -104,7 +112,9 @@ class GPT(nn.Module):
                 # μP: std ∝ 1/√fan_in relative to the base model; fc→out has 4× fan-in
                 std = c.sigma / math.sqrt(c.m) if c.mup else c.sigma
                 nn.init.normal_(lin.weight, std=std)
-        if c.mup:
+        if c.mup_readout not in ("normal", "zero"):
+            raise ValueError(f"mup_readout must be 'normal' or 'zero', not {c.mup_readout!r}")
+        if c.mup and c.mup_readout == "zero":
             nn.init.zeros_(self.head.weight)
         else:
             nn.init.normal_(self.head.weight, std=c.sigma)
