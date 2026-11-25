@@ -8,8 +8,16 @@ Width is ``d_model = m · base_width``. Head dim stays at 64, so heads scale wit
 | embeddings (input-like) | σ | η | — |
 | hidden matrices (q, k, v, out, MLP) | σ / √m | **η / m** | — |
 | readout | **0** | η | logits **× 1/m** |
-| attention scores | — | — | ``q·k / d_head`` (instead of ``/√d_head``) |
+| attention scores | — | — | ``q·k / √d_head`` (see below) |
 | LayerNorm gains | 1 | η | — |
+
+Attention: μP prescribes ``q·k / d_head`` because, when the head dim grows with width, q and
+k become correlated during training and their dot product grows like d_head. Here the head
+dim is fixed at 64 and the number of heads grows instead, so that argument doesn't apply
+and any constant works. ``mup_attn="sqrt"`` (the default) keeps GPT-2's ``1/√d_head``, which
+makes μP at the base width (m = 1) the same model as SP apart from the zero readout.
+``mup_attn="d"`` uses ``1/d_head``. With d_head fixed that is just 8× smaller attention
+logits at every width, and in the T4 sweep it cost μP about 0.6 nats/byte (see README).
 
 The point: under SP, the per-step change of each hidden activation grows with width (Adam
 updates are O(1) per entry and sum over fan-in), so the best lr shrinks as the model
@@ -40,6 +48,7 @@ class Config:
     ctx: int = 128
     mup: bool = True
     sigma: float = 0.02
+    mup_attn: str = "sqrt"  # μP attention scale: "sqrt" (1/√d_head) or "d" (1/d_head)
 
     @property
     def m(self) -> float:
@@ -51,7 +60,10 @@ class Block(nn.Module):
         super().__init__()
         d = c.width
         self.h, self.hd = d // c.head_dim, c.head_dim
-        self.scale = 1.0 / c.head_dim if c.mup else 1.0 / math.sqrt(c.head_dim)
+        if c.mup_attn not in ("sqrt", "d"):
+            raise ValueError(f"mup_attn must be 'sqrt' or 'd', not {c.mup_attn!r}")
+        inv_d = c.mup and c.mup_attn == "d"
+        self.scale = 1.0 / c.head_dim if inv_d else 1.0 / math.sqrt(c.head_dim)
         self.n1, self.n2 = nn.LayerNorm(d), nn.LayerNorm(d)
         self.qkv = nn.Linear(d, 3 * d, bias=False)
         self.proj = nn.Linear(d, d, bias=False)

@@ -37,6 +37,20 @@ def test_mup_initialisation():
     assert mu(x).abs().max() == 0
 
 
+def test_mup_at_base_width_is_sp_up_to_the_readout():
+    """At m = 1 every μP multiplier is 1, so with the same readout the two models agree."""
+    sp, mu = _model(32, False), _model(32, True)  # base_width = 32
+    mu.head.weight.data.copy_(sp.head.weight)
+    x = torch.randint(0, 256, (2, 8))
+    torch.testing.assert_close(mu(x), sp(x))
+    assert [g["lr"] for g in param_groups(mu, 1e-3)] == [g["lr"] for g in param_groups(sp, 1e-3)]
+    # the 1/d_head variant is a different model even at m = 1
+    torch.manual_seed(0)
+    mu_d = GPT(Config(width=32, mup=True, ctx=32, mup_attn="d", **KW))
+    mu_d.head.weight.data.copy_(sp.head.weight)
+    assert not torch.allclose(mu_d(x), sp(x))
+
+
 def test_mup_logits_are_divided_by_width_multiplier():
     m = _model(128, True)
     torch.nn.init.normal_(m.head.weight, std=0.02)
@@ -66,6 +80,8 @@ def test_run_and_report(tmp_path):
     assert math.isfinite(r["val_loss"]) and r["params"] > 0
     text = report_sweep([r, {**r, "lr": 2.0**-7, "val_loss": None}])
     assert "μP" in text and "✗" in text and "**" in text
+    assert r["mup_attn"] == "sqrt"
+    assert "q·k/d_head" in report_sweep([{**r, "mup_attn": "d"}])
 
 
 def test_sweep_cli_resumes(tmp_path):
